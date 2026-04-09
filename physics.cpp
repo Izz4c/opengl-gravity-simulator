@@ -28,16 +28,21 @@ void Object::updatePos(){
 }
 // Draws this object at a resolution
 void Object::DrawCircle(int resolution){
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f(color.r, color.g, color.b);  // Yellow circle
-    glVertex2d(position[0],position[1]);
-    for(int i=0;i<=resolution;i++){
-        double angle=2.0f*M_PI*(static_cast<double>(i)/resolution);
-        double x = position[0] + cos(angle)*radius;
-        double y = position[1] + sin(angle)*radius;
-        glVertex2d(x,y); 
-    } 
-    glEnd();
+    // 1. Clear the matrix for this object
+    glPushMatrix();
+
+    // 2. Move the "Camera" or the Object
+    // We move -10.0f on Z to put the object 10 units in front of the lens
+    glTranslatef(this->position[0], this->position[1], this->position[2]); 
+
+    // 3. Set the color
+    glColor3f(this->color.r, this->color.g, this->color.b);
+
+    // 4. Draw the Sphere using GLU
+    GLUquadric* quad = gluNewQuadric();
+    gluSphere(quad, this->radius, 32, 32); // radius, slices, stacks
+    gluDeleteQuadric(quad);
+    glPopMatrix();
 }
 
 // Checks if this object is colliding with another object
@@ -112,28 +117,3 @@ std::vector<float> subtract(std::vector<float> A, std::vector<float> B){
     }
     return newvector;
 }
-/*
-void Object::CollisionCheck(Object* object){
-    float dx = object->position[0]-this->position[0];
-    float dy = object->position[1]-this->position[1];
-    float distance = sqrt(dx*dx+dy*dy);
-    if(distance<object->radius+this->radius){
-        float nx = dx/distance;
-        float ny = dy/distance;
-        float vx = object->velocity[0]-this->velocity[0];
-        float vy = object->velocity[1]-this->velocity[1];
-        float relVel = vx*nx + vy*ny; // Measures how fast the other ball came towards this ball
-        if(relVel < 0){
-            float impulse = 2*relVel/2;
-            this->velocity[0] += 0.9*impulse * nx;
-            this->velocity[1] += 0.9*impulse * ny;
-            object->velocity[0] -= 0.9*impulse * nx;
-            object->velocity[1] -= 0.9*impulse * ny;
-        }
-        float overlap = 0.5f * (object->radius+this->radius - distance);
-        this->position[0] -= overlap * nx;
-        this->position[1] -= overlap * ny;
-        object->position[0] += overlap * nx;
-        object->position[1] += overlap * ny;
-    }
-}*/

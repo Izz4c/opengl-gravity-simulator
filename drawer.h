@@ -1,6 +1,5 @@
 #ifndef DRAW_H
 #define DRAW_H
-#include <GLFW/glfw3.h>
 
 struct Color{
     float r;float g;float b;

@@ -1,8 +1,10 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 #include <vector>
+#include <GLFW/glfw3.h>
 #include <cmath>
 #include "drawer.h"
+#include <GL/glu.h>
 class Object{
     public:
     std::vector<float> position;
